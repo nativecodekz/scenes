@@ -215,3 +215,84 @@ class BracketByBracketScene(Scene):
         self.play(TransformFromCopy(f[17:19], rg.bc.clabel))
         self.play(TransformFromCopy(f[20:22], rg.bd.clabel))
         self.wait()
+
+
+class SquareOfSum(Scene):
+    def construct(self):
+        f = Tex(*'(a+b)^2=(a+b)(a+b)=aa+ab+ba+bb')
+        self.play(Write(f[0:7]))
+        self.wait()
+        self.play(Write(f[7:18]))
+        self.wait()
+
+        # formula animation
+
+        # aa
+        self.play(TransformFromCopy(f[8], f[18]), path_arc=np.pi)
+        self.play(TransformFromCopy(f[13], f[19]), path_arc=np.pi)
+        self.play(Write(f[20]))
+
+        # ab
+        self.play(TransformFromCopy(f[8], f[21]), path_arc=np.pi)
+        self.play(TransformFromCopy(f[15], f[22]), path_arc=np.pi)
+        self.play(Write(f[23]))
+
+        # ba
+        self.play(TransformFromCopy(f[10], f[24]), path_arc=np.pi)
+        self.play(TransformFromCopy(f[13], f[25]), path_arc=np.pi)
+        self.play(Write(f[26]))
+
+        # bb
+        self.play(TransformFromCopy(f[10], f[27]), path_arc=np.pi)
+        self.play(TransformFromCopy(f[15], f[28]), path_arc=np.pi)
+        self.wait()
+
+        # replace aa -> a2
+        f1 = Tex('a^2')
+        f1.move_to(f[18:20].get_center()).shift(0.1*UP)
+        self.play(Transform(f[18:20], f1))
+
+        # replace ba -> ab
+        f2 = Tex('ab')
+        f2.move_to(f[24:26].get_center())
+        self.play(Transform(f[24:26], f2))
+
+        # replace bb -> b^2
+        f3 = Tex('b^2')
+        f3.move_to(f[27:29].get_center())
+        self.play(Transform(f[27:29], f3))
+
+        # group ab -> 2ab
+        f4 = Tex('a^2+2ab+b^2')
+        f4.next_to(f[18].get_edge_center(RIGHT), buff=0).shift(0.4*LEFT)
+        self.play(Transform(Group(f1, f2, f3, f[18:29]), f4))
+
+
+
+class SquareOfDiff(Scene):
+    def construct(self):
+        f = Tex('(a-b)^2')
+        f.save_state()
+        self.play(Write(f))
+        self.wait()
+        f1 = Tex('(a+(-b))^2')
+        self.play(ReplacementTransform(f, f1))
+        self.wait()
+        f2 = Tex('=a^2+a(-b)+a(-b)+b^2')
+        f2.next_to(f1.get_edge_center(RIGHT), RIGHT, buff=0)
+        self.play(Write(f2))
+        self.play(Group(f1, f2).animate.center())
+        self.wait(3)
+        f3 = Tex('=a^2-ab-ab+b^2')
+        f3.next_to(f1.get_edge_center(RIGHT), RIGHT, buff=0)
+        self.play(ReplacementTransform(f2, f3))
+        self.wait(3)
+        f4 = Tex('=a^2-2ab+b^2')
+        f4.next_to(f1.get_edge_center(RIGHT), RIGHT, buff=0)
+        self.play(ReplacementTransform(f3, f4))
+        self.play(Group(f1, f4).animate.center())
+        self.wait()
+        f.restore()
+        f.shift(LEFT*1.5)
+        self.play(Uncreate(f1), Write(f))
+        self.wait()
