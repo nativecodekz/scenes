@@ -9,7 +9,7 @@ class Scene0(Scene):
         self.play(Write(f1))
         self.wait(3)
         self.play(Write(txt1))
-        self.wait(5)
+        self.wait(10)
         self.play(Indicate(f1[6]))
         self.wait()
         self.play(Indicate(f1[0:5]))
