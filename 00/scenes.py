@@ -296,3 +296,25 @@ class SquareOfDiff(Scene):
         f.shift(LEFT*1.5)
         self.play(Uncreate(f1), Write(f))
         self.wait()
+
+class NativeCodeIntro(Scene):
+    def construct(self):
+        txt = Text('Native Code').scale(1.5)
+        self.play(Write(txt))
+        self.wait(2)
+        self.play(Uncreate(txt))
+        self.wait()
+
+class GoldenRuleTitle(Scene):
+    def construct(self):
+        txt = Text('Золотое правило алгебры')
+        self.play(Write(txt))
+        self.wait(2)
+        txt2 = Text('Делайте с одной частью уравнения то,', font_size=24)
+        txt3 = Text('что вы делаете с другой!', font_size=24)
+
+        tg = Group(txt2, txt3)
+        tg.arrange(DOWN)
+
+        self.play(txt.animate.shift(UP), ShowCreation(tg))
+        self.wait()
