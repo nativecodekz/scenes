@@ -318,3 +318,51 @@ class GoldenRuleTitle(Scene):
 
         self.play(txt.animate.shift(UP), ShowCreation(tg))
         self.wait()
+
+class GoldenRuleDemonstration(Scene):
+    def construct(self):
+        f = Tex(*'5+3=6+2+7')
+        f1 = Tex(*'5+3+7=6+2+7')
+        self.play(Write(f[0:7]))
+        self.wait(3)
+        self.play(Write(f[7:9]))
+        self.play(Indicate(f[7:9]))
+        self.wait(2)
+        self.play(TransformMatchingTex(f, f1, path_arc=-np.pi/2))
+        self.wait()
+        self.play(Indicate(Group(f1[3:5], f1[9:11])))
+        self.wait(3)
+        self.play(Uncreate(f1))
+        
+        f = Tex(*'a+b=c-a')
+        f1 = Tex(*'a+b=(c-a)^2')
+        self.play(Write(f))
+        self.wait()
+        self.play(TransformMatchingTex(f, f1))
+        self.wait()
+        f2 = Tex(*'(a+b)^2=(c-a)^2')
+        self.play(TransformMatchingTex(f1, f2))
+        self.wait(3)
+        self.play(Uncreate(f2))
+        self.play(Write(f))
+        self.wait()
+        f3 = Tex(*'a^2+b=c-a^2')
+        self.play(TransformMatchingTex(f, f3))
+        self.wait()
+        f4 = Tex('a', '^', '2', '+', 'b', '\\neq ', 'c', '-', 'a', '^', '2')
+        self.play(TransformMatchingTex(f3, f4))
+        self.wait()
+        f5 = Tex(*'a+b=c-a')
+        self.play(Uncreate(f4))
+        self.play(Write(f5))
+        self.wait()
+        f6 = Tex(*'(a+b)d=(c-a)d')
+        self.play(TransformMatchingTex(f5, f6))
+        self.wait()
+        f7 = Tex(*'ad+bd=cd-ad')
+        self.play(TransformMatchingTex(f6, f7))
+        self.wait()
+
+
+
+        
