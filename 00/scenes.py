@@ -547,3 +547,77 @@ class SquareRootNote(Scene):
         self.wait(3)
         self.play(Indicate(f3[4]))
         self.wait()
+
+class PythagoreanTheoremTitle(Scene):
+    def construct(self):
+        self.play(Write(Text('Теорема Пифагора')))
+        self.wait()
+
+def indicatePolygon(p: Polygon):
+    p.save_state()
+    return Succession(p.animate.set_fill(YELLOW, opacity=0.6), Restore(p), run_time=1)
+
+class PythagoreanTheoremForSquare(Scene):
+    def construct(self):
+        rect = Rectangle(3.0, 3.0)
+        self.play(ShowCreation(rect))
+        a_label1 = Tex('a')
+        a_label2 = Tex('a')
+        a_label1.next_to(rect.get_edge_center(UP), UP)
+        a_label2.next_to(rect.get_edge_center(LEFT), LEFT)
+        self.play(FadeIn(a_label1), FadeIn(a_label2))
+        self.wait()
+        diag = Line(rect.get_corner(DL), rect.get_corner(UR))
+        self.play(ShowCreation(diag))
+        c_label1 = Tex('c')
+        c_label1.shift(UL*0.25)
+        self.play(FadeIn(c_label1))
+        self.play(Flash(diag), Indicate(c_label1))
+        self.wait()
+
+        # replace with two triangles
+        tr1 = Polygon(rect.get_corner(UR), rect.get_corner(UL), rect.get_corner(DL))
+        tr2 = Polygon(rect.get_corner(DR), rect.get_corner(UR), rect.get_corner(DL))
+        self.play(FadeOut(rect), FadeOut(diag), FadeIn(tr1), FadeIn(tr2))
+        self.wait()
+        vg1 = VGroup(tr1, tr2)
+        vg2 = vg1.copy()
+        vg2.move_to(vg1.get_edge_center(RIGHT), LEFT)
+        self.play(TransformFromCopy(vg1, vg2))
+        self.play(vg2.animate.rotate(-np.pi/2))
+
+        # vg 3
+        vg3 = vg2.copy().move_to(vg2.get_edge_center(DOWN), TOP)
+        self.play(TransformFromCopy(vg2, vg3))
+        self.play(vg3.animate.rotate(-np.pi/2))
+
+        # vg4
+        vg4 = vg3.copy().move_to(vg3.get_edge_center(LEFT), RIGHT)
+        self.play(TransformFromCopy(vg3, vg4))
+        self.play(vg4.animate.rotate(-np.pi/2))
+
+        #center and scale
+        vg = VGroup(vg1, vg2, vg3, vg4, a_label1, a_label2, c_label1)
+        self.play(vg.animate.center().scale(0.8))
+        self.wait()
+
+        # indicate
+        self.play(indicatePolygon(vg1[1]), indicatePolygon(vg2[1]), indicatePolygon(vg3[1]), indicatePolygon(vg4[1]))
+
+        # shift
+        self.play(vg.animate.scale(0.6).to_edge(LEFT))
+
+        # formulae
+        f1 = Tex('c^2=4\\frac{ a^2 }{ 2 }')
+        self.play(Write(f1))
+        self.wait()
+        f2 = Tex('c^2=2a^2')
+        self.play(TransformMatchingTex(f1, f2))
+        self.wait(3)
+        f3 = Tex('c=\\sqrt{2a^2}')
+        self.play(TransformMatchingTex(f2, f3))
+        self.wait(3)
+        f4 = Tex('c=a\\sqrt{ 2 }')
+        self.play(TransformMatchingTex(f3, f4))
+        self.wait()
+        
