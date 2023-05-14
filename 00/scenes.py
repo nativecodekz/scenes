@@ -646,3 +646,15 @@ class PythagoreanTheoremTrigonometry(Scene):
         f6 = Tex('\\cos^2(\\alpha)', '+', '\\sin^2(\\alpha)', '=', '1')
         self.play(TransformMatchingTex(f5, f6))
         self.wait()
+
+class IdeasOfAlgebra(Scene):
+    def construct(self):
+        self.play(Write(Text('Суть Алгебры')))
+        self.wait()
+
+class EndingScene(Scene):
+    def construct(self):
+        txt = Text('Благодарю за просмотр!')
+        self.play(Write(txt))
+        self.play(txt.animate.shift(UP))
+        self.play(Write(Text('Подписывайтесь на канал ;)').scale(0.6)))
