@@ -317,3 +317,133 @@ class CosineAndSineDefinition(Scene):
         sine = Tex('\\sin \\alpha = \\frac { b } { c } ').next_to(cosine, DOWN)
         self.play(Write(sine))
         self.wait()
+
+class RotationAnimation(Animation):
+    def interpolate_mobject(self, alpha: float) -> None:
+        min_len = 1.0
+        max_len = 4.0
+        t = sin(alpha * np.pi) ** 2
+        curr_len = min_len + (max_len - min_len)* t
+        self.mobject.set_x(curr_len*cos(np.pi / 5 + t * (np.pi - np.pi / 5)))
+        self.mobject.set_y(curr_len*sin(np.pi / 5 + t * (np.pi - np.pi / 5)))
+
+class CosineAndSineSummary(Scene):
+    def construct(self):
+        x_axis = Line(LEFT_SIDE, RIGHT_SIDE)
+        self.play(ShowCreation(x_axis))
+
+        y_axis = Line(TOP, BOTTOM)
+        self.play(ShowCreation(y_axis))
+
+        # dot
+        line = Line(ORIGIN, RIGHT, color=GREEN)
+        dot_g = Dot(RIGHT*cos(np.pi / 5 ) + UP*sin(np.pi / 5), color=GREEN)
+        v_length_label = Text('L = ', font_size=20).next_to(line, UP)
+        v_length = DecimalNumber(1.0, font_size=20).next_to(v_length_label, RIGHT)
+
+
+
+        def length_text_updater(txt):
+            txt.next_to(line, UP)
+            txt.set_value(line.get_length())
+
+
+        v_length.add_updater(length_text_updater)
+        v_length_label.add_updater(lambda l: l.next_to(line, UP))
+
+        #labels
+        x_label = Tex('x = L \\times \\cos \\alpha').to_edge(UR)
+        y_label = Tex('y = L \\times \\sin \\alpha').next_to(x_label, DOWN)
+
+        self.play(ShowCreation(Group(x_label, y_label)))
+
+        # arc
+        angle = Arc(2*np.pi, 0, n_components=20)
+
+        def arc_updater(a):
+            a.angle = atan2(dot_g.get_y(), dot_g.get_x())
+            a.init_points()
+            return a
+
+        line.add_updater(lambda l: l.put_start_and_end_on(ORIGIN, dot_g.get_center()))
+        angle.add_updater(arc_updater)
+
+        a_label = Tex('\\alpha').shift(RIGHT + UP)
+
+        self.play(FadeIn(dot_g), FadeIn(line), FadeIn(v_length), FadeIn(angle), FadeIn(a_label))
+        self.wait()
+        self.play(RotationAnimation(dot_g), run_time=15, rate_func=linear)
+        self.wait()
+
+class RotationAnimation2(Animation):
+    def interpolate_mobject(self, alpha: float) -> None:
+        self.mobject.set_x(2.0 * cos(alpha * 2.0*np.pi))
+        self.mobject.set_y(3.0 * sin(alpha * 2.0*np.pi))
+
+
+class CosineAndSineEllipse(Scene):
+    def construct(self):
+        x_axis = Line(LEFT_SIDE, RIGHT_SIDE)
+        self.play(ShowCreation(x_axis))
+
+        y_axis = Line(TOP, BOTTOM)
+        self.play(ShowCreation(y_axis))
+
+        #labels
+        x_label = Tex('x = A \\times \\cos \\alpha').to_edge(UR)
+        y_label = Tex('y = B \\times \\sin \\alpha').next_to(x_label, DOWN)
+
+        self.play(ShowCreation(Group(x_label, y_label)))
+        self.wait()
+        self.play(Indicate(x_label))
+        self.wait()
+        self.play(Indicate(y_label))
+        self.wait()
+
+        # dot
+        dot_g = Dot(RIGHT * 2, color=GREEN)
+        trace = TracedPath(dot_g.get_center, stroke_color=GREEN)
+        line = Line(ORIGIN, RIGHT * 2, color=GREEN)
+
+        line.add_updater(lambda l: l.put_start_and_end_on(ORIGIN, dot_g.get_center()))
+
+        self.play(FadeIn(line), FadeIn(trace), FadeIn(dot_g))
+        self.wait()
+        self.play(RotationAnimation2(dot_g), run_time=10)
+        self.wait()
+
+
+class TangentAndCotangentTitle(Scene):
+    def construct(self) -> None:
+        self.play(Write(Text('Тангенсы, Котангенсы')))
+        self.wait()
+
+class TangentDefinition(Scene):
+    def construct(self) -> None:
+        t1 = Tex('\\tan \\alpha = \\frac { \\sin \\alpha } { \\cos \\alpha }')
+        self.play(Write(t1))
+        self.wait()
+
+class TangentExplain(Scene):
+    def construct(self) -> None:
+        t1 = Tex('x = L \\times \\cos \\alpha')
+        t2 = Tex('y = L \\times \\sin \\alpha')
+        t2.next_to(t1, DOWN)
+
+        g1 = VGroup(t1, t2).center()
+
+        self.play(Write(g1))
+        self.wait(3)
+        self.play(g1.animate.to_edge(UP))
+        self.wait()
+        t3 = Tex('\\tan \\alpha = \\frac{ \\sin \\alpha } { \\cos \\alpha } =  \\frac { y } { x } = \\frac { L \\times \\sin \\alpha } { L \\times \\cos \\alpha }')
+        self.play(Write(t3))
+        self.wait(3)
+        t4 = Tex('\\tan \\alpha = \\frac { y } { x }')
+        self.play(ReplacementTransform(t3, t4))
+        self.wait(3)
+        t5 = Tex('\\cot \\alpha = \\frac { x } { y }').next_to(t4, DOWN,buff=0.5)
+        self.play(FadeIn(t5))
+        self.remove(t4)
+        self.play(VGroup(t4, t5).animate.center())
+        self.wait()
