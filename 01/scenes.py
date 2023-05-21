@@ -240,3 +240,53 @@ class AboutRadiansScene(Scene):
         self.play(ReplacementTransform(tex2, tex3))
         self.wait()
 
+class LengthDefinition(Scene):
+    def construct(self):
+        coords = NumberPlane(opacity=0.5)
+        self.play(ShowCreation(coords))
+        self.wait()
+
+        # draw point
+        dot = Dot(RIGHT * 4 + UP * 3, color=YELLOW)
+        line = Line(ORIGIN, dot.get_center(),color=RED)
+        self.play(ShowCreation(line), FadeIn(dot))
+        self.wait()
+        self.play(Flash(line))
+        self.wait(3)
+
+        line2 = Line(ORIGIN, UP * 3,color=RED)
+        self.play(ShowCreation(line2))
+        self.wait()
+        self.play(line2.animate.shift(RIGHT * 4))
+        self.wait()
+        line3 = Line(ORIGIN, RIGHT * 4, color=RED)
+        self.play(ShowCreation(line3))
+        self.wait()
+
+        label_x = Tex('x')
+        label_y = Tex('y')
+        label_c = Tex('c')
+
+        label_x.next_to(line3, DOWN)
+        label_y.next_to(line2, RIGHT)
+        label_c.next_to(line, UL).shift(-1.5*UL)
+
+        self.play(FadeIn(label_x), FadeIn(label_y), FadeIn(label_c))
+        self.wait()
+
+        # show formulae
+        formulae = Tex(*'c^2 = x^2+y^2', color=YELLOW)
+        formulae.shift(DOWN)
+        self.play(Write(formulae[0:3]))
+        self.wait()
+        self.play(TransformFromCopy(label_x, formulae[3:5]))
+        self.wait()
+        self.play(Write(formulae[5]))
+        self.wait()
+        self.play(TransformFromCopy(label_y, formulae[6:]))
+        self.wait()
+        self.play(Uncreate(coords))
+        self.wait()
+        self.play(Uncreate(Group(dot, line, line2, line3, label_x, label_y, label_c)))
+        self.play(formulae.animate.center())
+        self.wait()
