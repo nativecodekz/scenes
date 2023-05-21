@@ -143,3 +143,62 @@ class CosineAndSineGraphScene(Scene):
         y_dot.remove_updater(dot_y_shifter)
         x_dot.remove_updater(dot_x_shifter)
         self.wait()
+
+class CosineAndSineShift(Scene):
+    def construct(self):
+        # labels
+        cosTex = Tex('\\cos x', color=RED)
+        sinTex = Tex('\\sin x', color=BLUE)
+        cosTex.to_corner(UP + RIGHT)
+        sinTex.next_to(cosTex.get_edge_center(DOWN), DOWN)
+        self.play(ShowCreation(cosTex), ShowCreation(sinTex))
+        
+        cosine = FunctionGraph(lambda x: cos(x), color=RED,x_range=[-20, 20])
+        cosine.shift(RIGHT * np.pi / 2)
+        self.play(ShowCreation(cosine))
+        self.wait(1)
+        sine = FunctionGraph(lambda x: sin(x), color=BLUE,x_range=[-20, 20])
+        self.play(ShowCreation(sine))
+        self.wait(3)
+        self.play(cosine.animate.shift(LEFT * np.pi / 2))
+        
+        dot1 = Dot(UP, color=YELLOW)
+        dot2 = Dot(UP + RIGHT * np.pi/2, color=YELLOW)
+        self.play(ShowCreation(dot1), ShowCreation(dot2))
+
+        vg = VGroup(dot1, dot2)
+
+        brace = Brace(vg, UP)
+        self.play(ShowCreation(brace))
+
+        tex1 = Tex('{ \\pi \\over { 2 } } rad')
+        tex1.next_to(brace.get_center(), UP)
+        self.play(ShowCreation(tex1))
+        self.wait()
+
+class CosineAndSineAxisAngle(Scene):
+    def construct(self):
+        x_axis = Line(LEFT_SIDE, RIGHT_SIDE)
+        self.play(ShowCreation(x_axis))
+
+        y_axis = Line(TOP, BOTTOM)
+        self.play(ShowCreation(y_axis))
+
+
+        x_label = Tex('x')
+        x_label.next_to(RIGHT_SIDE / 2, DOWN)
+
+        y_label = Tex('y')
+        y_label.next_to(TOP / 2, LEFT)
+
+        self.play(ShowCreation(x_label), ShowCreation(y_label))
+
+        angle = Arc(np.pi/2, -np.pi/2)
+        self.play(ShowCreation(angle))
+        self.wait()
+
+        degree = Tex('90 \\circ')
+        degree.move_to(angle.get_corner(UR))
+
+        self.play(Write(degree))
+        self.wait()
