@@ -3,7 +3,7 @@ from manimlib.constants import DEFAULT_MOBJECT_TO_MOBJECT_BUFFER, ORIGIN, RIGHT,
 from manimlib.mobject.mobject import Mobject
 from manimlib.mobject.types.vectorized_mobject import VMobject
 import numpy as np
-from math import sin, cos
+from math import sin, cos, atan2
 
 class TrigonometrySubjectScene(Scene):
     def construct(self):
@@ -76,7 +76,70 @@ class CosineAndSineRotateScene(Scene):
         self.play(cosine.animate.set_opacity(0.0), sine.animate.set_opacity(0.0))
         self.play(cosine.animate.shift(DOWN*20), sine.animate.shift(RIGHT*20), run_time=10)
         self.wait()
+
+
+class CosineAndSineGraphScene(Scene):
+    def construct(self):
+        x_axis = Line(LEFT_SIDE, RIGHT_SIDE, stroke_width=0.5)
+        self.play(ShowCreation(x_axis))
+
+        y_axis = Line(TOP, BOTTOM, stroke_width=0.5)
+        self.play(ShowCreation(y_axis))
+
+        circle = Circle(radius=1, color=GREY_A)
+        self.play(ShowCreation(circle))
+        self.wait()
+
+        line = Line()
+        dot_g = Dot(RIGHT, color=GREEN)
+        line.add_updater(lambda l: l.put_start_and_end_on(ORIGIN, dot_g.get_center()))
+        self.play(ShowCreation(line), ShowCreation(dot_g))
+        self.wait()
+
+        def dot_y_shifter(dot, dt):
+            dot.set_y(dot_g.get_y())
+            dot.shift(RIGHT * dt * 0.35)
+
+        def dot_x_shifter(dot, dt):
+            dot.set_x(dot_g.get_x())
+            dot.shift(DOWN * dt * 0.35)
+
+        # sine
+        y_dot = Dot(LEFT_SIDE, color=YELLOW)
+        y_line = Line(color=YELLOW, stroke_width=0.5)
+        y_line.add_updater(lambda l: l.put_start_and_end_on(dot_g.get_center(), y_dot.get_center()))
+        y_path = TracedPath(y_dot.get_center, stroke_color=BLUE)
+        self.add(y_path)
+
         
 
 
+        # cosine
+        x_dot = Dot(TOP + RIGHT, color=YELLOW)
+        x_line = Line(color=YELLOW, stroke_width=0.5)
+        x_line.add_updater(lambda l: l.put_start_and_end_on(dot_g.get_center(), x_dot.get_center()))
+        x_path = TracedPath(x_dot.get_center, stroke_color=RED)
+        self.add(x_path)
 
+
+        self.play(ShowCreation(y_dot), ShowCreation(y_line), ShowCreation(x_dot), ShowCreation(x_line))
+
+        # labels
+        cosTex = Tex('\\cos x', color=RED)
+        sinTex = Tex('\\sin x', color=BLUE)
+        cosTex.to_corner(UP + RIGHT)
+        sinTex.next_to(cosTex.get_edge_center(DOWN), DOWN)
+        self.play(ShowCreation(cosTex), ShowCreation(sinTex))
+
+
+        # animate rotation
+        y_dot.add_updater(dot_y_shifter)
+        x_dot.add_updater(dot_x_shifter)
+        self.play(MoveAlongPath(dot_g, circle), run_time=4, rate_func=linear)
+        self.play(MoveAlongPath(dot_g, circle), run_time=4, rate_func=linear)
+        self.play(MoveAlongPath(dot_g, circle), run_time=4, rate_func=linear)
+        self.play(MoveAlongPath(dot_g, circle), run_time=4, rate_func=linear)
+        self.play(MoveAlongPath(dot_g, circle), run_time=4, rate_func=linear)
+        y_dot.remove_updater(dot_y_shifter)
+        x_dot.remove_updater(dot_x_shifter)
+        self.wait()
