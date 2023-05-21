@@ -316,3 +316,4 @@ class CosineAndSineDefinition(Scene):
 
         sine = Tex('\\sin \\alpha = \\frac { b } { c } ').next_to(cosine, DOWN)
         self.play(Write(sine))
+        self.wait()
