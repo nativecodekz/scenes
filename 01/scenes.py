@@ -202,3 +202,41 @@ class CosineAndSineAxisAngle(Scene):
 
         self.play(Write(degree))
         self.wait()
+
+class AboutRadiansScene(Scene):
+    def construct(self):
+        tex1 = Tex('180 \\circ = \\pi rad')
+        self.play(Write(tex1))
+        self.wait(5)
+        self.play(tex1.animate.to_edge(UP))
+        self.wait()
+
+        # angle
+        line1 = Line(ORIGIN, RIGHT * 3)
+        line2 = Line(ORIGIN, RIGHT * 3)
+
+        self.play(ShowCreation(line1), ShowCreation(line2))
+        self.wait()
+        self.play(line2.animate.rotate_about_origin(np.pi/3))
+        self.wait()
+        angle = Arc(0, np.pi/3)
+        self.play(ShowCreation(angle))
+        self.wait()
+        arc = Arc(0, np.pi/3, radius=3.0, color=RED)
+        self.play(TransformFromCopy(angle, arc))
+        self.wait()
+        txt1 = Text('угол * радиус')
+        txt1.next_to(arc, RIGHT)
+        self.play(ShowCreation(txt1))
+        self.wait(3)
+        self.play(Uncreate(Group(line1, line2, angle, arc, txt1, tex1)))
+        self.wait()
+        tex2 = Tex('rad =  \\frac { \\pi deg }{ 180 }')
+        txt2 = Text('deg - градусы', font_size=20)
+        txt2.next_to(tex2, DOWN)
+        self.play(Write(tex2), Write(txt2))
+        self.wait()
+        tex3 = Tex('deg = \\frac { 180rad } { \\pi }')
+        self.play(ReplacementTransform(tex2, tex3))
+        self.wait()
+
