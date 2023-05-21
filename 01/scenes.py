@@ -290,3 +290,29 @@ class LengthDefinition(Scene):
         self.play(Uncreate(Group(dot, line, line2, line3, label_x, label_y, label_c)))
         self.play(formulae.animate.center())
         self.wait()
+
+class CosineAndSineDefinition(Scene):
+    def construct(self):
+        # triangle
+        a = Line(ORIGIN, RIGHT*4)
+        b = Line(RIGHT*4, RIGHT*4 + UP*3)
+        c = Line(ORIGIN, RIGHT*4 + UP*3)
+
+        arc = Arc(0, atan2(3, 4))
+
+        label_a = Tex('a').next_to(a, DOWN)
+        label_b = Tex('b').next_to(b, RIGHT)
+        label_c = Tex('c').next_to(c, UL).shift(-UL*1.5)
+        label_alpha = Tex('\\alpha').next_to(arc, RIGHT)
+
+        tr = VGroup(a, b, c, label_a, label_b, label_c, arc, label_alpha).center()
+        self.play(ShowCreation(tr))
+        self.play(tr.animate.to_edge(LEFT))
+
+        # cos
+        cosine = Tex('\\cos \\alpha = \\frac { a } { c } ')
+        self.play(Write(cosine))
+        self.play(cosine.animate.shift(UP))
+
+        sine = Tex('\\sin \\alpha = \\frac { b } { c } ').next_to(cosine, DOWN)
+        self.play(Write(sine))
