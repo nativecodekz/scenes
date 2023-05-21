@@ -447,3 +447,26 @@ class TangentExplain(Scene):
         self.remove(t4)
         self.play(VGroup(t4, t5).animate.center())
         self.wait()
+
+
+class InverseTrigonometricFunctions(Scene):
+    def construct(self):
+        self.wait()
+        t1 = Tex('\\alpha = \\asin x')
+        self.play(Write(t1))
+        self.wait(3)
+        t2 = Tex('\\alpha = \\asin ( \\sin ( \\alpha ) )')
+        self.play(ReplacementTransform(t1, t2))
+        self.wait(3)
+        t3 = Tex('\\alpha = \\atan2(y, x)')
+        self.play(ReplacementTransform(t2, t3))
+        self.wait()
+
+class TangentExplain2(Scene):
+    def construct(self):
+        t1 = Tex('\\tan \\alpha = \\frac { y } { x }')
+        self.play(Write(t1))
+        self.wait(3)
+        t2 = Tex('\\alpha = \\atan \left( \\frac { y } { x } \\right)')
+        self.play(ReplacementTransform(t1, t2))
+        self.wait()
